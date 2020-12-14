@@ -1,3 +1,5 @@
+import 'dart:typed_data';
+
 import 'package:equatable/equatable.dart';
 
 class Manga extends Equatable {
@@ -43,7 +45,7 @@ class Manga extends Equatable {
     );
   }
 
-  Map<String, dynamic> toJson(Manga manga) {
+  Map<String, dynamic> toJson(Manga manga, Uint8List byteImages) {
     return {
       'mal_id': manga.id,
       'url': manga.url,
@@ -56,6 +58,7 @@ class Manga extends Equatable {
       'volumes': manga.volumes,
       'score': manga.score,
       'start_date': manga.startDate,
+      'local_images': byteImages,
     };
   }
 

@@ -1,9 +1,6 @@
-import 'package:connectivity/connectivity.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:manga_app/constant/constant_theme.dart';
-import 'package:manga_app/cubit/connectivity_cubit.dart';
-import 'package:manga_app/cubit/manga_cubit.dart';
+import 'package:manga_app/logic/logic.dart';
 
 import 'ui/pages/home_page.dart';
 
@@ -28,12 +25,13 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       theme: ThemeData(
+        materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
         bottomNavigationBarTheme: BottomNavigationBarThemeData(
           backgroundColor: Color(0xff17181c),
         ),
         canvasColor: Color(0xff17181c),
         textTheme: TextTheme(
-          bodyText2: TextStyle(
+          bodyText1: TextStyle(
             color: Colors.white,
             fontSize: 16,
           ),
