@@ -14,7 +14,7 @@ void main() {
           create: (context) => ConnectivityCubit(connectivity: Connectivity()),
         ),
         BlocProvider(
-          create: (context) => MangaCubit(),
+          create: (context) => SearchMangaCubit(),
         ),
         BlocProvider(
           create: (context) => SeasonMangaCubit(),
@@ -56,7 +56,7 @@ class MyApp extends StatelessWidget {
           elevation: 0,
           textTheme: TextTheme(
             headline6: TextStyle(
-              fontSize: 14,
+              fontSize: 20,
               fontWeight: FontWeight.bold,
             ),
           ),

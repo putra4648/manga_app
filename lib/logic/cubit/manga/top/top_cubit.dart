@@ -10,9 +10,11 @@ class TopMangaCubit extends Cubit<TopMangaState> {
 
   // TOP MANGA
   void initTopManga() {
-    emit(MangaTopLoading());
+    emit(TopMangaLoading());
     MangaService().topManga().then((result) {
-      emit(MangaTopLoaded(topMangas: result));
+      emit(TopMangaLoaded(topMangas: result));
+    }).catchError((_) {
+      emit(TopMangaFailure());
     });
   }
 }

@@ -1,11 +1,13 @@
-import 'package:cached_network_image/cached_network_image.dart';
-import 'package:carousel_slider/carousel_slider.dart';
+import 'dart:async';
+
 import 'package:convex_bottom_bar/convex_bottom_bar.dart';
-import 'package:dots_indicator/dots_indicator.dart';
 import 'package:flutter/material.dart';
 
 import 'package:manga_app/logic/logic.dart';
 import 'package:manga_app/ui/widgets/custom_style_hook.dart';
+import 'package:manga_app/ui/widgets/loading.dart';
+import 'package:manga_app/ui/widgets/show_character_data.dart';
+import 'package:manga_app/ui/widgets/show_manga_data.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({
@@ -17,8 +19,13 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
+  List<Widget> listWidgetBody;
+  Completer<void> refreshCompleter;
+
   @override
   void initState() {
+    listWidgetBody = <Widget>[];
+    refreshCompleter = Completer<void>();
     context.read<SeasonMangaCubit>().initSeason();
     context.read<TopMangaCubit>().initTopManga();
     context.read<CharacterCubit>().initCharacter();
@@ -68,14 +75,8 @@ class _HomePageState extends State<HomePage> {
             icon: Icon(Icons.person),
             onPressed: () {},
           ),
-          title: Column(
-            mainAxisSize: MainAxisSize.min,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text('Good Morning'),
-              Text('Your name'),
-            ],
-          ),
+          title: const Text('Manga'),
+          centerTitle: true,
           actions: [
             IconButton(
               icon: Icon(Icons.search),
@@ -87,247 +88,170 @@ class _HomePageState extends State<HomePage> {
             ),
           ],
         ),
-        body: ListView(
-          children: [
-            Container(
-              margin: const EdgeInsets.all(10),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    'New Release!',
-                    style: theme.textTheme.headline5,
-                  ),
-                  SizedBox(height: 10),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Text('Check out some new manga here'),
-                      InkWell(
-                        onTap: () {},
-                        child: Row(
-                          children: [
-                            const Text('Show more'),
-                            SizedBox(width: 5),
-                            Icon(Icons.arrow_forward_ios)
-                          ],
-                        ),
-                      )
-                    ],
-                  ),
-                ],
-              ),
-            ),
-            Container(
-              child: BlocBuilder<CharacterCubit, CharacterState>(
-                builder: (context, state) {
-                  if (state is CharacterLoading) {
-                    return Center(
-                      child: CircularProgressIndicator(),
-                    );
-                  }
-                  if (state is CharacterLoaded) {
-                    return CarouselSlider.builder(
-                      itemCount: state.characters.take(8).length,
-                      itemBuilder: (context, index) {
-                        return Container(
-                          width: 100,
-                          height: 120,
-                          decoration: BoxDecoration(
-                            image: DecorationImage(
-                              alignment: Alignment.topCenter,
-                              colorFilter: ColorFilter.mode(
-                                  Colors.black38, BlendMode.darken),
-                              image: CachedNetworkImageProvider(
-                                  state.characters[index].imageUrl),
-                            ),
-                          ),
-                          child: Text(
-                            state.characters[index].title,
-                            textAlign: TextAlign.center,
-                          ),
-                        );
-                      },
-                      options: CarouselOptions(
-                        viewportFraction: 0.3,
-                        enlargeCenterPage: true,
-                        scrollDirection: Axis.horizontal,
-                      ),
-                    );
-                  }
-                  return SizedBox();
+        body: BlocConsumer<ConnectivityCubit, ConnectivityState>(
+          listener: (context, state) {
+            if (state is ConnectionLoading) {
+              if (listWidgetBody.isEmpty) {
+                listWidgetBody.add(buildContainerLabel(
+                    'New Release!', 'Check out some new manga here', theme));
+                listWidgetBody.add(buildContainerCharacterManga());
+                listWidgetBody.add(buildContainerLabel(
+                    'Top Manga', 'You can see our top manga here', theme));
+                listWidgetBody.add(buildContainerTopManga());
+                listWidgetBody.add(buildContainerLabel(
+                    'Season', 'Here list upcoming manga', theme));
+                listWidgetBody.add(buildContainerSeasonManga());
+              } else {
+                listWidgetBody.clear();
+              }
+            }
+            if (state is ConnectionResult) {
+              if (state.connectivityResult.index == 2) {
+                listWidgetBody.clear();
+                Scaffold.of(context).showSnackBar(SnackBar(
+                    content: Text(
+                  'No Connection',
+                  textAlign: TextAlign.center,
+                )));
+              }
+            }
+          },
+          builder: (context, state) {
+            if (state is ConnectionLoading) {
+              return Loading();
+            }
+            if (state is ConnectionResult) {
+              return RefreshIndicator(
+                onRefresh: () {
+                  context.read<SeasonMangaCubit>().initSeason();
+                  context.read<TopMangaCubit>().initTopManga();
+                  context.read<CharacterCubit>().initCharacter();
+                  return refreshCompleter.future;
                 },
-              ),
-            ),
-            Container(
-              margin: const EdgeInsets.all(10),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    'Top Manga',
-                    style: theme.textTheme.headline5,
+                child: SingleChildScrollView(
+                  child: Column(
+                    children: listWidgetBody,
                   ),
-                  SizedBox(height: 10),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      const Text('You can see our top manga here'),
-                      InkWell(
-                        onTap: () {},
-                        child: Row(
-                          children: [
-                            const Text('Show more'),
-                            SizedBox(width: 5),
-                            Icon(Icons.arrow_forward_ios)
-                          ],
-                        ),
-                      )
-                    ],
-                  ),
-                ],
-              ),
-            ),
-            Container(
-              height: 300,
-              child: BlocBuilder<TopMangaCubit, TopMangaState>(
-                builder: (context, state) {
-                  if (state is MangaTopLoading) {
-                    return Center(
-                      child: CircularProgressIndicator(),
-                    );
-                  }
-                  if (state is MangaTopLoaded) {
-                    return GridView.builder(
-                      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                        crossAxisCount: 2,
-                        mainAxisSpacing: 5,
-                        crossAxisSpacing: 10,
-                      ),
-                      itemCount: state.topMangas.take(12).length,
-                      scrollDirection: Axis.horizontal,
-                      itemBuilder: (context, index) {
-                        return Material(
-                          child: InkWell(
-                            borderRadius: BorderRadius.circular(5),
-                            onTap: () {},
-                            child: Container(
-                              margin: const EdgeInsets.all(5),
-                              alignment: Alignment.center,
-                              decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(10),
-                                image: DecorationImage(
-                                  fit: BoxFit.fitWidth,
-                                  alignment: Alignment.topCenter,
-                                  colorFilter: ColorFilter.mode(
-                                    Colors.black38,
-                                    BlendMode.darken,
-                                  ),
-                                  image: CachedNetworkImageProvider(
-                                      state.topMangas[index].imageUrl),
-                                ),
-                              ),
-                              child: Text(
-                                state.topMangas[index].title,
-                                maxLines: 3,
-                                overflow: TextOverflow.ellipsis,
-                                textAlign: TextAlign.center,
-                              ),
-                            ),
-                          ),
-                        );
-                      },
-                    );
-                  }
-                  return SizedBox();
-                },
-              ),
-            ),
-            Container(
-              margin: const EdgeInsets.all(10),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    'Season',
-                    style: theme.textTheme.headline5,
-                  ),
-                  SizedBox(height: 10),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      const Text(
-                        'Here list upcoming manga',
-                      ),
-                      SizedBox(height: 10),
-                      InkWell(
-                        onTap: () {},
-                        child: Row(
-                          children: [
-                            const Text('Show more'),
-                            SizedBox(width: 5),
-                            Icon(Icons.arrow_forward_ios)
-                          ],
-                        ),
-                      )
-                    ],
-                  ),
-                ],
-              ),
-            ),
-            Container(
-              margin: const EdgeInsets.all(10),
-              height: 300,
-              child: BlocBuilder<SeasonMangaCubit, MangaSeasonState>(
-                builder: (context, state) {
-                  if (state is MangaSeasonLoaded) {
-                    return GridView.builder(
-                      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                        crossAxisCount: 2,
-                        mainAxisSpacing: 5,
-                        crossAxisSpacing: 10,
-                      ),
-                      itemCount: 12,
-                      scrollDirection: Axis.horizontal,
-                      itemBuilder: (context, index) {
-                        return Material(
-                          child: InkWell(
-                            borderRadius: BorderRadius.circular(5),
-                            onTap: () {},
-                            child: Container(
-                              margin: const EdgeInsets.all(5),
-                              alignment: Alignment.center,
-                              decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(10),
-                                image: DecorationImage(
-                                  fit: BoxFit.fitWidth,
-                                  alignment: Alignment.topCenter,
-                                  colorFilter: ColorFilter.mode(
-                                    Colors.black38,
-                                    BlendMode.darken,
-                                  ),
-                                  image: CachedNetworkImageProvider(
-                                      state.mangaSeasons[index].imageUrl),
-                                ),
-                              ),
-                              child: Text(
-                                state.mangaSeasons[index].title,
-                                maxLines: 3,
-                                overflow: TextOverflow.ellipsis,
-                                textAlign: TextAlign.center,
-                              ),
-                            ),
-                          ),
-                        );
-                      },
-                    );
-                  }
-                  return SizedBox();
-                },
-              ),
-            ),
-          ],
+                ),
+              );
+            }
+            return SizedBox();
+          },
         ),
+      ),
+    );
+  }
+
+  Widget buildContainerSeasonManga() {
+    return Container(
+      margin: const EdgeInsets.all(10),
+      height: 300,
+      // SEASON MANGA
+      child: BlocConsumer<SeasonMangaCubit, SeasonMangaState>(
+        listener: (context, state) {
+          if (state is SeasonMangaLoaded) {
+            refreshCompleter?.complete();
+            refreshCompleter = Completer();
+          }
+        },
+        builder: (context, state) {
+          if (state is SeasonMangaLoaded) {
+            return ShowMangaData(listManga: state.mangaSeasons);
+          }
+          if (state is SeasonMangaFailure) {
+            return Center(
+              child: Text('Something went wrong'),
+            );
+          }
+          return SizedBox();
+        },
+      ),
+    );
+  }
+
+  Widget buildContainerTopManga() {
+    return Container(
+      height: 300,
+      // TOP MANGA
+      child: BlocConsumer<TopMangaCubit, TopMangaState>(
+        listener: (context, state) {
+          if (state is TopMangaLoaded) {
+            refreshCompleter?.complete();
+            refreshCompleter = Completer();
+          }
+        },
+        builder: (context, state) {
+          if (state is TopMangaLoading) {
+            return Loading();
+          }
+          if (state is TopMangaLoaded) {
+            return ShowMangaData(listManga: state.topMangas);
+          }
+          if (state is TopMangaFailure) {
+            return Center(
+              child: Text('Something went wrong'),
+            );
+          }
+          return SizedBox();
+        },
+      ),
+    );
+  }
+
+  Widget buildContainerLabel(
+      String labelName, String description, ThemeData theme) {
+    return Container(
+      margin: const EdgeInsets.all(10),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            labelName,
+            style: theme.textTheme.headline5,
+          ),
+          SizedBox(height: 10),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Text(description),
+              InkWell(
+                onTap: () {},
+                child: Row(
+                  children: [
+                    const Text('Show more'),
+                    SizedBox(width: 5),
+                    Icon(Icons.arrow_forward_ios)
+                  ],
+                ),
+              )
+            ],
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget buildContainerCharacterManga() {
+    return Container(
+      child: BlocConsumer<CharacterCubit, CharacterState>(
+        listener: (context, state) {
+          refreshCompleter?.complete();
+          refreshCompleter = Completer();
+        },
+        builder: (context, state) {
+          if (state is CharacterLoading) {
+            return Loading();
+          }
+          if (state is CharacterLoaded) {
+            return ShowCharacterData(listCharacter: state.characters);
+          }
+          if (state is CharacterFailure) {
+            return Center(
+              child: Text('Something went wrong'),
+            );
+          }
+          return SizedBox();
+        },
       ),
     );
   }

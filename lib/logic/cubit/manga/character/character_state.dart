@@ -16,3 +16,5 @@ class CharacterLoaded extends CharacterState {
 
   CharacterLoaded({this.characters});
 }
+
+class CharacterFailure extends CharacterState {}

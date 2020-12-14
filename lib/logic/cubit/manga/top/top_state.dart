@@ -9,10 +9,12 @@ abstract class TopMangaState extends Equatable {
 
 class TopInitial extends TopMangaState {}
 
-class MangaTopLoading extends TopMangaState {}
+class TopMangaLoading extends TopMangaState {}
 
-class MangaTopLoaded extends TopMangaState {
+class TopMangaLoaded extends TopMangaState {
   final List<Manga> topMangas;
 
-  MangaTopLoaded({this.topMangas});
+  TopMangaLoaded({this.topMangas});
 }
+
+class TopMangaFailure extends TopMangaState {}

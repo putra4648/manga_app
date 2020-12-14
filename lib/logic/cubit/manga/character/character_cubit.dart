@@ -12,6 +12,8 @@ class CharacterCubit extends Cubit<CharacterState> {
     emit(CharacterLoading());
     GetCharacter().getCharacter().then((res) {
       emit(CharacterLoaded(characters: res));
+    }).catchError((_) {
+      emit(CharacterFailure());
     });
   }
 }

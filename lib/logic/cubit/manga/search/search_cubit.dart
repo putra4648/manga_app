@@ -3,10 +3,10 @@ import 'package:equatable/equatable.dart';
 import 'package:manga_app/data/models/manga.dart';
 import 'package:manga_app/logic/logic.dart';
 
-part 'manga_state.dart';
+part 'search_state.dart';
 
-class MangaCubit extends Cubit<MangaState> {
-  MangaCubit() : super(MangaInitial());
+class SearchMangaCubit extends Cubit<SearchMangaState> {
+  SearchMangaCubit() : super(MangaInitial());
 
   // void getMangaData(String search) async {
   //   emit(MangaLoading());

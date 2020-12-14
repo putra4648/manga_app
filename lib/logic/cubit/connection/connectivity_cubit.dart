@@ -20,6 +20,7 @@ class ConnectivityCubit extends Cubit<ConnectivityState> {
   void connectionResult(ConnectivityResult result) {
     emit(ConnectionLoading());
     emit(ConnectionResult(connectivityResult: result));
+    print(result);
   }
 
   @override

@@ -5,13 +5,15 @@ import 'package:manga_app/data/repository/repository.dart';
 
 part 'season_state.dart';
 
-class SeasonMangaCubit extends Cubit<MangaSeasonState> {
+class SeasonMangaCubit extends Cubit<SeasonMangaState> {
   SeasonMangaCubit() : super(SeasonInitial());
 
   void initSeason() {
-    emit(MangaSeasonLoading());
+    emit(SeasonMangaLoading());
     MangaService().mangaSeason().then((res) {
-      emit(MangaSeasonLoaded(mangaSeasons: res));
+      emit(SeasonMangaLoaded(mangaSeasons: res));
+    }).catchError((_) {
+      emit(SeasonMangaFailure());
     });
   }
 }

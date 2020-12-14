@@ -1,18 +1,20 @@
 part of 'season_cubit.dart';
 
-abstract class MangaSeasonState extends Equatable {
-  const MangaSeasonState();
+abstract class SeasonMangaState extends Equatable {
+  const SeasonMangaState();
 
   @override
   List<Object> get props => [];
 }
 
-class SeasonInitial extends MangaSeasonState {}
+class SeasonInitial extends SeasonMangaState {}
 
-class MangaSeasonLoading extends MangaSeasonState {}
+class SeasonMangaLoading extends SeasonMangaState {}
 
-class MangaSeasonLoaded extends MangaSeasonState {
+class SeasonMangaLoaded extends SeasonMangaState {
   final List<Manga> mangaSeasons;
 
-  MangaSeasonLoaded({this.mangaSeasons});
+  SeasonMangaLoaded({this.mangaSeasons});
 }
+
+class SeasonMangaFailure extends SeasonMangaState {}
