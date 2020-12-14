@@ -34,6 +34,7 @@ class _HomePageState extends State<HomePage> {
 
   @override
   Widget build(BuildContext context) {
+    final size = MediaQuery.of(context).size;
     final theme = Theme.of(context).copyWith(
       iconTheme: IconThemeData(
         color: Colors.white,
@@ -71,8 +72,7 @@ class _HomePageState extends State<HomePage> {
         ),
         appBar: AppBar(
           leading: IconButton(
-            splashRadius: 16,
-            icon: Icon(Icons.person),
+            icon: Icon(Icons.notifications),
             onPressed: () {},
           ),
           title: const Text('Manga'),
@@ -80,10 +80,6 @@ class _HomePageState extends State<HomePage> {
           actions: [
             IconButton(
               icon: Icon(Icons.search),
-              onPressed: () {},
-            ),
-            IconButton(
-              icon: Icon(Icons.notifications),
               onPressed: () {},
             ),
           ],
@@ -94,20 +90,20 @@ class _HomePageState extends State<HomePage> {
               if (listWidgetBody.isEmpty) {
                 listWidgetBody.add(buildContainerLabel(
                     'New Release!', 'Check out some new manga here', theme));
-                listWidgetBody.add(buildContainerCharacterManga());
+                listWidgetBody.add(buildContainerCharacterManga(size));
                 listWidgetBody.add(buildContainerLabel(
                     'Top Manga', 'You can see our top manga here', theme));
-                listWidgetBody.add(buildContainerTopManga());
+                listWidgetBody.add(buildContainerTopManga(size));
                 listWidgetBody.add(buildContainerLabel(
                     'Season', 'Here list upcoming manga', theme));
-                listWidgetBody.add(buildContainerSeasonManga());
+                listWidgetBody.add(buildContainerSeasonManga(size));
               } else {
                 listWidgetBody.clear();
               }
             }
             if (state is ConnectionResult) {
               if (state.connectivityResult.index == 2) {
-                listWidgetBody.clear();
+                // listWidgetBody.clear();
                 Scaffold.of(context).showSnackBar(SnackBar(
                     content: Text(
                   'No Connection',
@@ -142,11 +138,10 @@ class _HomePageState extends State<HomePage> {
     );
   }
 
-  Widget buildContainerSeasonManga() {
+  Widget buildContainerSeasonManga(Size size) {
     return Container(
       margin: const EdgeInsets.all(10),
-      height: 300,
-      // SEASON MANGA
+      height: size.height * 0.5,
       child: BlocConsumer<SeasonMangaCubit, SeasonMangaState>(
         listener: (context, state) {
           if (state is SeasonMangaLoaded) {
@@ -169,10 +164,9 @@ class _HomePageState extends State<HomePage> {
     );
   }
 
-  Widget buildContainerTopManga() {
+  Widget buildContainerTopManga(Size size) {
     return Container(
-      height: 300,
-      // TOP MANGA
+      height: size.height * 0.5,
       child: BlocConsumer<TopMangaCubit, TopMangaState>(
         listener: (context, state) {
           if (state is TopMangaLoaded) {
@@ -231,8 +225,9 @@ class _HomePageState extends State<HomePage> {
     );
   }
 
-  Widget buildContainerCharacterManga() {
+  Widget buildContainerCharacterManga(Size size) {
     return Container(
+      height: size.height * 0.35,
       child: BlocConsumer<CharacterCubit, CharacterState>(
         listener: (context, state) {
           refreshCompleter?.complete();
@@ -243,7 +238,8 @@ class _HomePageState extends State<HomePage> {
             return Loading();
           }
           if (state is CharacterLoaded) {
-            return ShowCharacterData(listCharacter: state.characters);
+            return ShowCharacterData(
+                listCharacter: state.characters, size: size);
           }
           if (state is CharacterFailure) {
             return Center(

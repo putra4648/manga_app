@@ -5,8 +5,10 @@ import 'package:manga_app/data/models/character.dart';
 
 class ShowCharacterData extends StatelessWidget {
   final List<Character> listCharacter;
+  final Size size;
 
-  const ShowCharacterData({Key key, @required this.listCharacter})
+  const ShowCharacterData(
+      {Key key, @required this.size, @required this.listCharacter})
       : super(key: key);
 
   @override
@@ -15,11 +17,11 @@ class ShowCharacterData extends StatelessWidget {
       itemCount: listCharacter.take(8).length,
       itemBuilder: (context, index) {
         return Container(
-          width: 100,
-          height: 120,
+          height: size.height,
+          width: size.width * 0.5,
           decoration: BoxDecoration(
             image: DecorationImage(
-                alignment: Alignment.topCenter,
+                fit: BoxFit.fill,
                 colorFilter: ColorFilter.mode(Colors.black38, BlendMode.darken),
                 image:
                     CachedNetworkImageProvider(listCharacter[index].imageUrl)),
@@ -31,6 +33,7 @@ class ShowCharacterData extends StatelessWidget {
         );
       },
       options: CarouselOptions(
+        height: size.height,
         viewportFraction: 0.3,
         enlargeCenterPage: true,
         scrollDirection: Axis.horizontal,
