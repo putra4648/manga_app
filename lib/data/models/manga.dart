@@ -36,7 +36,7 @@ class Manga extends Equatable {
       imageUrl: json['image_url'] as String,
       title: json['title'] as String,
       isPublising: json['publishing'] as bool,
-      score: (json['score'] as num).toDouble(),
+      // score: (json['score'] as num).toDouble() ?? 0.0,
       startDate: json['start_date'] as String,
       synopsis: json['synopsis'] as String,
       type: json['type'] as String,

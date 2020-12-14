@@ -1,18 +1,12 @@
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:manga_app/data/models/manga.dart';
-import 'package:manga_app/data/repository/get_manga/get_manga.dart';
+import 'package:manga_app/logic/logic.dart';
 
 part 'manga_state.dart';
 
 class MangaCubit extends Cubit<MangaState> {
   MangaCubit() : super(MangaInitial());
-
-  // TOP MANGA
-  void initTopManga() {}
-
-  // SEASONS
-  void initSeasonArchive() {}
 
   // void getMangaData(String search) async {
   //   emit(MangaLoading());
@@ -25,4 +19,8 @@ class MangaCubit extends Cubit<MangaState> {
   //   });
   //   // print(saveLocal.length);
   // }
+  @override
+  Future<void> close() {
+    return super.close();
+  }
 }

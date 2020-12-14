@@ -1,5 +1,10 @@
+import 'package:cached_network_image/cached_network_image.dart';
+import 'package:carousel_slider/carousel_slider.dart';
 import 'package:convex_bottom_bar/convex_bottom_bar.dart';
+import 'package:dots_indicator/dots_indicator.dart';
 import 'package:flutter/material.dart';
+
+import 'package:manga_app/logic/logic.dart';
 import 'package:manga_app/ui/widgets/custom_style_hook.dart';
 
 class HomePage extends StatefulWidget {
@@ -14,6 +19,9 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage> {
   @override
   void initState() {
+    context.read<SeasonMangaCubit>().initSeason();
+    context.read<TopMangaCubit>().initTopManga();
+    context.read<CharacterCubit>().initCharacter();
     super.initState();
   }
 
@@ -53,12 +61,6 @@ class _HomePageState extends State<HomePage> {
               TabItem(icon: Icons.more_horiz, title: 'Menu'),
             ],
           ),
-        ),
-        floatingActionButton: FloatingActionButton(
-          onPressed: () {
-            // context.read<MangaCubit>().getMangaData('grand blue');
-          },
-          child: Text('load'),
         ),
         appBar: AppBar(
           leading: IconButton(
@@ -117,8 +119,45 @@ class _HomePageState extends State<HomePage> {
               ),
             ),
             Container(
-              height: 200,
-              color: Colors.white,
+              child: BlocBuilder<CharacterCubit, CharacterState>(
+                builder: (context, state) {
+                  if (state is CharacterLoading) {
+                    return Center(
+                      child: CircularProgressIndicator(),
+                    );
+                  }
+                  if (state is CharacterLoaded) {
+                    return CarouselSlider.builder(
+                      itemCount: state.characters.take(8).length,
+                      itemBuilder: (context, index) {
+                        return Container(
+                          width: 100,
+                          height: 120,
+                          decoration: BoxDecoration(
+                            image: DecorationImage(
+                              alignment: Alignment.topCenter,
+                              colorFilter: ColorFilter.mode(
+                                  Colors.black38, BlendMode.darken),
+                              image: CachedNetworkImageProvider(
+                                  state.characters[index].imageUrl),
+                            ),
+                          ),
+                          child: Text(
+                            state.characters[index].title,
+                            textAlign: TextAlign.center,
+                          ),
+                        );
+                      },
+                      options: CarouselOptions(
+                        viewportFraction: 0.3,
+                        enlargeCenterPage: true,
+                        scrollDirection: Axis.horizontal,
+                      ),
+                    );
+                  }
+                  return SizedBox();
+                },
+              ),
             ),
             Container(
               margin: const EdgeInsets.all(10),
@@ -150,23 +189,57 @@ class _HomePageState extends State<HomePage> {
               ),
             ),
             Container(
-              margin: const EdgeInsets.all(10),
               height: 300,
-              color: Colors.red,
-              child: GridView.builder(
-                gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                  crossAxisCount: 2,
-                  mainAxisSpacing: 5,
-                  crossAxisSpacing: 10,
-                ),
-                itemCount: 12,
-                scrollDirection: Axis.horizontal,
-                itemBuilder: (context, index) {
-                  return Container(
-                    height: 100,
-                    width: 100,
-                    color: Colors.white,
-                  );
+              child: BlocBuilder<TopMangaCubit, TopMangaState>(
+                builder: (context, state) {
+                  if (state is MangaTopLoading) {
+                    return Center(
+                      child: CircularProgressIndicator(),
+                    );
+                  }
+                  if (state is MangaTopLoaded) {
+                    return GridView.builder(
+                      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                        crossAxisCount: 2,
+                        mainAxisSpacing: 5,
+                        crossAxisSpacing: 10,
+                      ),
+                      itemCount: state.topMangas.take(12).length,
+                      scrollDirection: Axis.horizontal,
+                      itemBuilder: (context, index) {
+                        return Material(
+                          child: InkWell(
+                            borderRadius: BorderRadius.circular(5),
+                            onTap: () {},
+                            child: Container(
+                              margin: const EdgeInsets.all(5),
+                              alignment: Alignment.center,
+                              decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(10),
+                                image: DecorationImage(
+                                  fit: BoxFit.fitWidth,
+                                  alignment: Alignment.topCenter,
+                                  colorFilter: ColorFilter.mode(
+                                    Colors.black38,
+                                    BlendMode.darken,
+                                  ),
+                                  image: CachedNetworkImageProvider(
+                                      state.topMangas[index].imageUrl),
+                                ),
+                              ),
+                              child: Text(
+                                state.topMangas[index].title,
+                                maxLines: 3,
+                                overflow: TextOverflow.ellipsis,
+                                textAlign: TextAlign.center,
+                              ),
+                            ),
+                          ),
+                        );
+                      },
+                    );
+                  }
+                  return SizedBox();
                 },
               ),
             ),
@@ -184,7 +257,7 @@ class _HomePageState extends State<HomePage> {
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       const Text(
-                        'Our season archive',
+                        'Here list upcoming manga',
                       ),
                       SizedBox(height: 10),
                       InkWell(
@@ -205,21 +278,51 @@ class _HomePageState extends State<HomePage> {
             Container(
               margin: const EdgeInsets.all(10),
               height: 300,
-              color: Colors.red,
-              child: GridView.builder(
-                gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                  crossAxisCount: 2,
-                  mainAxisSpacing: 5,
-                  crossAxisSpacing: 10,
-                ),
-                itemCount: 12,
-                scrollDirection: Axis.horizontal,
-                itemBuilder: (context, index) {
-                  return Container(
-                    height: 100,
-                    width: 100,
-                    color: Colors.white,
-                  );
+              child: BlocBuilder<SeasonMangaCubit, MangaSeasonState>(
+                builder: (context, state) {
+                  if (state is MangaSeasonLoaded) {
+                    return GridView.builder(
+                      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                        crossAxisCount: 2,
+                        mainAxisSpacing: 5,
+                        crossAxisSpacing: 10,
+                      ),
+                      itemCount: 12,
+                      scrollDirection: Axis.horizontal,
+                      itemBuilder: (context, index) {
+                        return Material(
+                          child: InkWell(
+                            borderRadius: BorderRadius.circular(5),
+                            onTap: () {},
+                            child: Container(
+                              margin: const EdgeInsets.all(5),
+                              alignment: Alignment.center,
+                              decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(10),
+                                image: DecorationImage(
+                                  fit: BoxFit.fitWidth,
+                                  alignment: Alignment.topCenter,
+                                  colorFilter: ColorFilter.mode(
+                                    Colors.black38,
+                                    BlendMode.darken,
+                                  ),
+                                  image: CachedNetworkImageProvider(
+                                      state.mangaSeasons[index].imageUrl),
+                                ),
+                              ),
+                              child: Text(
+                                state.mangaSeasons[index].title,
+                                maxLines: 3,
+                                overflow: TextOverflow.ellipsis,
+                                textAlign: TextAlign.center,
+                              ),
+                            ),
+                          ),
+                        );
+                      },
+                    );
+                  }
+                  return SizedBox();
                 },
               ),
             ),

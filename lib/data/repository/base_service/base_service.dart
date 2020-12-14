@@ -4,7 +4,7 @@ enum RequestType { GET, POST, DELETE }
 
 class BaseService {
   Future<http.Response> response(RequestType requestType, String url,
-      {dynamic body, Map<String, dynamic> headers}) async {
+      {dynamic body, Map<String, String> headers}) async {
     http.Response response;
     switch (requestType) {
       case RequestType.GET:
