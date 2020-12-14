@@ -88,8 +88,8 @@ class _HomePageState extends State<HomePage> {
           listener: (context, state) {
             if (state is ConnectionLoading) {
               if (listWidgetBody.isEmpty) {
-                listWidgetBody.add(buildContainerLabel(
-                    'New Release!', 'Check out some new manga here', theme));
+                listWidgetBody.add(buildContainerLabel('Top Character!',
+                    'There are most popular character in 2020', theme));
                 listWidgetBody.add(buildContainerCharacterManga(size));
                 listWidgetBody.add(buildContainerLabel(
                     'Top Manga', 'You can see our top manga here', theme));
