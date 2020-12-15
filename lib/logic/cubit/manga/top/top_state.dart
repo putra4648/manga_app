@@ -1,20 +1,34 @@
-part of 'top_cubit.dart';
+part of 'top_bloc.dart';
 
-abstract class TopMangaState extends Equatable {
-  const TopMangaState();
+abstract class TopState extends Equatable {
+  const TopState();
 
   @override
   List<Object> get props => [];
 }
 
-class TopInitial extends TopMangaState {}
+class TopInitial extends TopState {}
 
-class TopMangaLoading extends TopMangaState {}
+class TopLoading extends TopState {}
 
-class TopMangaLoaded extends TopMangaState {
-  final List<Manga> topMangas;
+class TopLoadedSuccess extends TopState {
+  final List<Manga> tops;
+  final bool isEmpty;
 
-  TopMangaLoaded({this.topMangas});
+  TopLoadedSuccess({this.tops, this.isEmpty});
+
+  TopLoadedSuccess copyWith({
+    List<Manga> tops,
+    bool isEmpty,
+  }) {
+    return TopLoadedSuccess(
+      tops: tops ?? this.tops,
+      isEmpty: isEmpty ?? this.isEmpty,
+    );
+  }
+
+  @override
+  List<Object> get props => [tops, isEmpty];
 }
 
-class TopMangaFailure extends TopMangaState {}
+class TopFailure extends TopState {}

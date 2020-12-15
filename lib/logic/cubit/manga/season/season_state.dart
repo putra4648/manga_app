@@ -1,20 +1,34 @@
-part of 'season_cubit.dart';
+part of 'season_bloc.dart';
 
-abstract class SeasonMangaState extends Equatable {
-  const SeasonMangaState();
+abstract class SeasonState extends Equatable {
+  const SeasonState();
 
   @override
   List<Object> get props => [];
 }
 
-class SeasonInitial extends SeasonMangaState {}
+class SeasonInitial extends SeasonState {}
 
-class SeasonMangaLoading extends SeasonMangaState {}
+class SeasonLoading extends SeasonState {}
 
-class SeasonMangaLoaded extends SeasonMangaState {
-  final List<Manga> mangaSeasons;
+class SeasonLoadedSuccess extends SeasonState {
+  final List<Manga> seasons;
+  final bool isEmpty;
 
-  SeasonMangaLoaded({this.mangaSeasons});
+  SeasonLoadedSuccess({this.seasons, this.isEmpty});
+
+  SeasonLoadedSuccess copyWith({
+    List<Manga> seasons,
+    bool isEmpty,
+  }) {
+    return SeasonLoadedSuccess(
+      seasons: seasons ?? this.seasons,
+      isEmpty: isEmpty ?? this.isEmpty,
+    );
+  }
+
+  @override
+  List<Object> get props => [seasons.isEmpty];
 }
 
-class SeasonMangaFailure extends SeasonMangaState {}
+class SeasonFailure extends SeasonState {}

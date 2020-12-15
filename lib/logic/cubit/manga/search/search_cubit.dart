@@ -1,7 +1,8 @@
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
-import 'package:manga_app/data/models/manga.dart';
-import 'package:manga_app/logic/logic.dart';
+
+import '../../../../data/models/models.dart';
+import '../../../logic.dart';
 
 part 'search_state.dart';
 

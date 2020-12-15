@@ -1,11 +1,12 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
-import 'package:manga_app/data/models/manga.dart';
 
-class ShowMangaData extends StatelessWidget {
+import '../../data/models/models.dart';
+
+class ShowMangaPage extends StatelessWidget {
   final List<Manga> listManga;
 
-  const ShowMangaData({Key key, @required this.listManga}) : super(key: key);
+  const ShowMangaPage({Key key, @required this.listManga}) : super(key: key);
   @override
   Widget build(BuildContext context) {
     return GridView.builder(

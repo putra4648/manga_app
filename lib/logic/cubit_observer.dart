@@ -1,4 +1,4 @@
-import 'package:manga_app/logic/logic.dart';
+import 'logic.dart';
 
 class CubitObserver extends BlocObserver {
   void transition(Cubit bloc, Transition transition) {
