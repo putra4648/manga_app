@@ -76,7 +76,9 @@ class _HomeScreenState extends State<HomeScreen> {
           actions: [
             IconButton(
               icon: Icon(Icons.search),
-              onPressed: () {},
+              onPressed: () {
+                Navigator.of(context).pushNamed('/search');
+              },
             ),
           ],
         ),
@@ -103,26 +105,24 @@ class _HomeScreenState extends State<HomeScreen> {
             if (state is ConnectionResult) {
               if (state.connectivityResult.index != 2) {
                 return RefreshIndicator(
-                  onRefresh: () {},
-                  // onRefresh: () {
-                  // context.read<SeasonBloc>().add(SeasonInitEvent());
-                  // context.read<TopBloc>().add(TopInitEvent());
-                  // context
-                  //     .read<CharacterBloc>()
-                  //     .add(CharacterRefreshRequested());
-                  // return refreshCompleter.future;
-                  // },
+                  // onRefresh: () {},
+                  onRefresh: () {
+                    // context.read<SeasonBloc>().add(SeasonInitEvent());
+                    // context.read<TopBloc>().add(TopInitEvent());
+                    context.read<CharacterBloc>().add(CharacterLoadEvent());
+                    return refreshCompleter.future;
+                  },
                   child: SingleChildScrollView(
                     child: Column(
                       children: [
                         buildContainerLabel('Top Character',
-                            'Most popular character in 2020', theme),
+                            'Most popular character in 2020', theme, null),
                         buildContainerCharacterManga(size),
                         buildContainerLabel('Top Manga',
-                            'You can see our top manga here', theme),
+                            'You can see our top manga here', theme, true),
                         buildContainerTopManga(size),
-                        buildContainerLabel(
-                            'Season', 'List upcoming manga and anime', theme),
+                        buildContainerLabel('Season',
+                            'List upcoming manga and anime', theme, false),
                         buildContainerSeasonManga(size)
                       ],
                     ),
@@ -141,6 +141,38 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
+  Widget buildContainerCharacterManga(Size size) {
+    return Container(
+      height: size.height * 0.35,
+      child: BlocConsumer<CharacterBloc, CharacterState>(
+        listener: (context, state) {
+          if (state is CharacterLoadedSuccess) {
+            refreshCompleter?.complete();
+            refreshCompleter = Completer();
+          }
+        },
+        builder: (context, state) {
+          if (state is CharacterLoading) {
+            return Loading();
+          }
+          if (state is CharacterLoadedSuccess) {
+            return ShowCharacterPage(
+              listCharacter: state.characters,
+              size: size,
+              isEmpty: state.isEmpty,
+            );
+          }
+          if (state is CharacterFailure) {
+            return Center(
+              child: Text('Something went wrong'),
+            );
+          }
+          return SizedBox();
+        },
+      ),
+    );
+  }
+
   Widget buildContainerSeasonManga(Size size) {
     return Container(
       margin: const EdgeInsets.all(10),
@@ -148,6 +180,7 @@ class _HomeScreenState extends State<HomeScreen> {
       child: BlocConsumer<SeasonBloc, SeasonState>(
         listener: (context, state) {
           if (state is SeasonLoadedSuccess) {
+            // context.read<CharacterBloc>().add(CharacterInitEvent());
             refreshCompleter?.complete();
             refreshCompleter = Completer();
           }
@@ -196,7 +229,7 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   Widget buildContainerLabel(
-      String labelName, String description, ThemeData theme) {
+      String labelName, String description, ThemeData theme, bool isShow) {
     return Container(
       margin: const EdgeInsets.all(10),
       child: Column(
@@ -213,7 +246,8 @@ class _HomeScreenState extends State<HomeScreen> {
               Text(description),
               InkWell(
                 onTap: () {
-                  Navigator.of(context).pushNamed('/detail');
+                  Navigator.of(context)
+                      .pushNamed('/show_more', arguments: isShow);
                 },
                 child: Row(
                   children: [
@@ -226,39 +260,6 @@ class _HomeScreenState extends State<HomeScreen> {
             ],
           ),
         ],
-      ),
-    );
-  }
-
-  Widget buildContainerCharacterManga(Size size) {
-    return Container(
-      height: size.height * 0.35,
-      child: BlocConsumer<CharacterBloc, CharacterState>(
-        listener: (context, state) {
-          if (state is CharacterLoadedSuccess) {
-            // context.read<CharacterBloc>().add(CharacterInitEvent());
-            refreshCompleter?.complete();
-            refreshCompleter = Completer();
-          }
-        },
-        builder: (context, state) {
-          if (state is CharacterLoading) {
-            return Loading();
-          }
-          if (state is CharacterLoadedSuccess) {
-            return ShowCharacterPage(
-              listCharacter: state.characters,
-              size: size,
-              isEmpty: state.isEmpty,
-            );
-          }
-          if (state is CharacterFailure) {
-            return Center(
-              child: Text('Something went wrong'),
-            );
-          }
-          return SizedBox();
-        },
       ),
     );
   }

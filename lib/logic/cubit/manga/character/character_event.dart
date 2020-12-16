@@ -9,12 +9,9 @@ abstract class CharacterEvent extends Equatable {
 
 class CharacterInitEvent extends CharacterEvent {}
 
-class CharacterRefreshRequested extends CharacterEvent {
-  const CharacterRefreshRequested();
+class CharacterRefreshRequested extends CharacterEvent {}
 
-  @override
-  List<Object> get props => [];
-}
+class CharacterSubtypeRequested extends CharacterEvent {}
 
 class CharacterLoadEvent extends CharacterEvent {}
 

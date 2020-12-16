@@ -25,7 +25,7 @@ class ShowCharacterPage extends StatelessWidget {
             itemBuilder: (context, index) {
               return Container(
                 height: size.height,
-                width: size.width * 0.5,
+                width: size.width,
                 decoration: BoxDecoration(
                   image: DecorationImage(
                       fit: BoxFit.fill,
@@ -42,7 +42,7 @@ class ShowCharacterPage extends StatelessWidget {
             },
             options: CarouselOptions(
               height: size.height,
-              viewportFraction: 0.3,
+              viewportFraction: 0.4,
               enlargeCenterPage: true,
               scrollDirection: Axis.horizontal,
             ),

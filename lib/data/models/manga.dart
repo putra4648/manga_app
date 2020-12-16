@@ -6,12 +6,13 @@ class Manga extends Equatable {
   final String imageUrl;
   final String title;
   final bool isPublising;
-  final double score;
+  final String score;
   final String synopsis;
   final String type;
   final num chapters;
   final num volumes;
   final String startDate;
+  final String endDate;
 
   const Manga({
     this.id = 0,
@@ -19,12 +20,13 @@ class Manga extends Equatable {
     this.imageUrl = '',
     this.title = '',
     this.isPublising = false,
-    this.score = 0,
+    this.score = '0',
     this.synopsis = '',
     this.type = '',
     this.chapters = 0,
     this.volumes = 0,
     this.startDate = '',
+    this.endDate = '',
   });
 
   factory Manga.fromJson(dynamic json) {
@@ -34,8 +36,9 @@ class Manga extends Equatable {
       imageUrl: json['image_url'] as String,
       title: json['title'] as String,
       isPublising: json['publishing'] as bool,
-      // score: (json['score'] as num).toDouble() ?? 0.0,
+      score: (json['score'] as num).toString(),
       startDate: json['start_date'] as String,
+      endDate: json['end_date'] as String,
       synopsis: json['synopsis'] as String,
       type: json['type'] as String,
       url: json['url'] as String,

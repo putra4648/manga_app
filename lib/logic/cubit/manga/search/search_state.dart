@@ -1,18 +1,29 @@
-part of 'search_cubit.dart';
+part of 'search_bloc.dart';
 
-abstract class SearchMangaState extends Equatable {
-  const SearchMangaState();
+abstract class SearchState extends Equatable {
+  const SearchState();
 
   @override
   List<Object> get props => [];
 }
 
-class MangaInitial extends SearchMangaState {}
+class SearchInitial extends SearchState {}
 
-class MangaLoading extends SearchMangaState {}
+class SearchLoading extends SearchState {}
 
-class MangaLoadedFromLocal extends SearchMangaState {
+class SearchLoadedSuccess extends SearchState {
   final List<Manga> mangas;
 
-  MangaLoadedFromLocal({this.mangas});
+  const SearchLoadedSuccess({this.mangas});
+
+  SearchLoadedSuccess copyWith({
+    List<Manga> mangas,
+  }) {
+    return SearchLoadedSuccess(
+      mangas: mangas ?? this.mangas,
+    );
+  }
+
+  @override
+  List<Object> get props => [mangas];
 }

@@ -42,6 +42,10 @@ class CharacterBloc extends Bloc<CharacterEvent, CharacterState> {
       }
     }
 
+    if (event is CharacterSubtypeRequested) {
+      if (currenState is CharacterLoadedSuccess) {}
+    }
+
     if (event is CharacterLoadEvent) {
       if (currenState is CharacterLoadedSuccess) {
         try {

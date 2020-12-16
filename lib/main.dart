@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:manga_app/logic/cubit_observer.dart';
 import 'package:manga_app/logic/logic.dart';
+import 'package:manga_app/ui/screens/search_screen.dart';
 
-import 'ui/screens/detail_screen.dart';
+import 'ui/screens/show_more_screen.dart';
 import 'ui/screens/home_screen.dart';
 
 void main() {
@@ -49,6 +50,9 @@ class MyApp extends StatelessWidget {
               SeasonBloc()..add(SeasonInitEvent())..add(SeasonLoadEvent()),
         ),
         BlocProvider(
+          create: (context) => SearchBloc()..add(SearchInitEvent()),
+        ),
+        BlocProvider(
           create: (context) =>
               TopBloc()..add(TopInitEvent())..add(TopLoadEvent()),
         ),
@@ -64,6 +68,10 @@ class MyApp extends StatelessWidget {
           canvasColor: Color(0xff17181c),
           textTheme: TextTheme(
             bodyText1: TextStyle(
+              color: Colors.white,
+              fontSize: 16,
+            ),
+            bodyText2: TextStyle(
               color: Colors.white,
               fontSize: 16,
             ),
@@ -90,9 +98,25 @@ class MyApp extends StatelessWidget {
         title: 'Material App',
         // home: HomeScreen(),
         initialRoute: '/',
-        routes: {
-          '/': (context) => HomeScreen(),
-          '/detail': (context) => DetailScreen(),
+        onGenerateRoute: (settings) {
+          final name = settings.name;
+          if (name == '/') {
+            return MaterialPageRoute(
+              builder: (context) => HomeScreen(),
+            );
+          }
+          if (name == '/show_more') {
+            final args = settings.arguments;
+            return MaterialPageRoute(
+              builder: (context) => ShowMoreScreen(
+                showMangas: args,
+              ),
+            );
+          }
+          if (name == '/search') {
+            return MaterialPageRoute(builder: (context) => SearchScreen());
+          }
+          return null;
         },
       ),
     );
