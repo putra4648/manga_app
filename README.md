@@ -12,4 +12,5 @@ WeaBook is an application made with Flutter with Jikan API
 <img src=".preview/preview.png" alt="preview.png">
 <img src=".preview/schedule.png" alt="preview.png">
 
+[Original Idea](https://dribbble.com/shots/10845602-Comic-Apps-UI-Design)
 
