@@ -59,7 +59,10 @@ class _SearchScreenState extends State<SearchScreen> {
                     children: state.mangas
                         .map(
                           (manga) => ListTile(
-                            onTap: () {},
+                            onTap: () {
+                              Navigator.of(context).pushNamed('/detail_search',
+                                  arguments: manga);
+                            },
                             title: Text(
                               manga.title,
                               style: Theme.of(context).textTheme.bodyText1,

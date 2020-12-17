@@ -20,7 +20,7 @@ class Manga extends Equatable {
     this.imageUrl = '',
     this.title = '',
     this.isPublising = false,
-    this.score = '0',
+    this.score = '',
     this.synopsis = '',
     this.type = '',
     this.chapters = 0,

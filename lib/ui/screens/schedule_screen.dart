@@ -88,7 +88,7 @@ class ScheduleScreen extends StatelessWidget {
                                         ),
                                         Text(
                                           schedule.synopsis ?? '',
-                                          maxLines: 3,
+                                          maxLines: 4,
                                           overflow: TextOverflow.ellipsis,
                                         ),
                                         Chip(
@@ -96,7 +96,9 @@ class ScheduleScreen extends StatelessWidget {
                                             child: Icon(Icons.star_outline),
                                           ),
                                           label: Text(
-                                            schedule.score.toString(),
+                                            schedule.score.isEmpty
+                                                ? 'N/a'
+                                                : schedule.score,
                                             style:
                                                 TextStyle(color: Colors.white),
                                           ),

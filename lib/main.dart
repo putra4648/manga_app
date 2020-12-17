@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:manga_app/logic/cubit_observer.dart';
 import 'package:manga_app/logic/logic.dart';
 import 'package:manga_app/ui/pages/navigation_page.dart';
+import 'package:manga_app/ui/screens/detail_screen.dart';
 import 'package:manga_app/ui/screens/search_screen.dart';
 
 import 'ui/screens/show_more_screen.dart';
@@ -99,6 +100,11 @@ class MyApp extends StatelessWidget {
           }
           if (name == '/search') {
             return MaterialPageRoute(builder: (context) => SearchScreen());
+          }
+          if (name == '/detail_search') {
+            final args = settings.arguments;
+            return MaterialPageRoute(
+                builder: (context) => DetailSearchScreen(anime: args));
           }
           return null;
         },
