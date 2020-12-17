@@ -33,6 +33,7 @@ dependencies:
   meta: null  
   convex_bottom_bar: ^2.6.0
   carousel_slider: ^2.3.1  
+  intl:
 
 dev_dependencies:
   flutter_test:

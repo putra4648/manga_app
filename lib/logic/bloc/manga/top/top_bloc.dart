@@ -17,19 +17,10 @@ class TopBloc extends Bloc<TopEvent, TopState> {
 
   @override
   Stream<TopState> mapEventToState(TopEvent event) async* {
-    final currenState = state;
-
-    if (event is TopInitEvent) {
-      yield TopLoading();
-      await Future.delayed(const Duration(seconds: 1));
-      yield TopLoadedSuccess(isEmpty: true, tops: tops);
-    }
     if (event is TopLoadEvent) {
+      yield TopLoading();
       final topRepo = await MangaRepository().getTopManga(Type.manga);
-      if (currenState is TopLoadedSuccess) {
-        final currentTops = List<Manga>.from(tops)..addAll(topRepo);
-        yield currenState.copyWith(isEmpty: false, tops: currentTops);
-      }
+      yield TopLoadedSuccess(tops: topRepo);
     }
   }
 }

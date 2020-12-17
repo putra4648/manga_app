@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:manga_app/logic/cubit_observer.dart';
 import 'package:manga_app/logic/logic.dart';
+import 'package:manga_app/ui/pages/navigation_page.dart';
 import 'package:manga_app/ui/screens/search_screen.dart';
 
 import 'ui/screens/show_more_screen.dart';
-import 'ui/screens/home_screen.dart';
 
 void main() {
   Bloc.observer = CubitObserver();
@@ -12,25 +12,6 @@ void main() {
     MyApp(),
   );
 }
-
-// MultiBlocProvider(
-//       providers: [
-//         BlocProvider(
-//           create: (context) => ConnectivityCubit(connectivity: Connectivity()),
-//         ),
-//         BlocProvider(
-//           create: (context) => SearchMangaCubit(),
-//         ),
-//         BlocProvider(
-//           create: (context) => SeasonMangaCubit(),
-//         ),
-//         BlocProvider(
-//           create: (context) => TopMangaCubit(),
-//         ),
-//         BlocProvider(
-//             create: (context) =>
-//                 CharacterBloc(<Character>[])..add(CharacterInitEvent())),
-//       ],
 
 class MyApp extends StatelessWidget {
   @override
@@ -41,20 +22,19 @@ class MyApp extends StatelessWidget {
           create: (context) => ConnectivityCubit(connectivity: Connectivity()),
         ),
         BlocProvider(
-          create: (context) => CharacterBloc()
-            ..add(CharacterInitEvent())
-            ..add(CharacterLoadEvent()),
+          create: (context) => CharacterBloc()..add(CharacterLoadEvent()),
         ),
         BlocProvider(
-          create: (context) =>
-              SeasonBloc()..add(SeasonInitEvent())..add(SeasonLoadEvent()),
+          create: (context) => SeasonBloc()..add(SeasonLoadEvent()),
         ),
         BlocProvider(
           create: (context) => SearchBloc()..add(SearchInitEvent()),
         ),
         BlocProvider(
-          create: (context) =>
-              TopBloc()..add(TopInitEvent())..add(TopLoadEvent()),
+          create: (context) => TopBloc()..add(TopLoadEvent()),
+        ),
+        BlocProvider(
+          create: (context) => ScheduleBloc()..add(ScheduleLoadEvent()),
         ),
       ],
       child: MaterialApp(
@@ -67,6 +47,10 @@ class MyApp extends StatelessWidget {
           ),
           canvasColor: Color(0xff17181c),
           textTheme: TextTheme(
+            headline4: TextStyle(
+              color: Colors.white,
+              fontWeight: FontWeight.w600,
+            ),
             bodyText1: TextStyle(
               color: Colors.white,
               fontSize: 16,
@@ -102,7 +86,7 @@ class MyApp extends StatelessWidget {
           final name = settings.name;
           if (name == '/') {
             return MaterialPageRoute(
-              builder: (context) => HomeScreen(),
+              builder: (context) => NavigationPage(),
             );
           }
           if (name == '/show_more') {

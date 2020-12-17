@@ -22,7 +22,6 @@ class _SearchScreenState extends State<SearchScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context).copyWith();
     return Scaffold(
       appBar: AppBar(
         title: const Text('Back'),
@@ -32,13 +31,11 @@ class _SearchScreenState extends State<SearchScreen> {
           children: [
             TextField(
               controller: controller,
-              autofocus: true,
               decoration: InputDecoration(
                 fillColor: Colors.white,
                 filled: true,
                 prefixIcon: Icon(Icons.search),
-                hintText: 'Search anime or manga',
-                hintStyle: TextStyle(color: Colors.white),
+                hintText: 'Search anime',
                 enabledBorder: InputBorder.none,
                 border: InputBorder.none,
               ),

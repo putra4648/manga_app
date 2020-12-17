@@ -13,22 +13,19 @@ class TopLoading extends TopState {}
 
 class TopLoadedSuccess extends TopState {
   final List<Manga> tops;
-  final bool isEmpty;
 
-  TopLoadedSuccess({this.tops, this.isEmpty});
+  TopLoadedSuccess({this.tops});
 
   TopLoadedSuccess copyWith({
     List<Manga> tops,
-    bool isEmpty,
   }) {
     return TopLoadedSuccess(
       tops: tops ?? this.tops,
-      isEmpty: isEmpty ?? this.isEmpty,
     );
   }
 
   @override
-  List<Object> get props => [tops, isEmpty];
+  List<Object> get props => [tops];
 }
 
 class TopFailure extends TopState {}

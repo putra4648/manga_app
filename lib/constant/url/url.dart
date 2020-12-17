@@ -9,4 +9,7 @@ class Url {
 
   // Character
   String character = 'https://api.jikan.moe/v3/top/characters/1';
+
+  // Anime
+  String animeSchedule = 'https://api.jikan.moe/v3/schedule/{day}';
 }

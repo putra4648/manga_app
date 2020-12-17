@@ -7,8 +7,4 @@ abstract class SeasonEvent extends Equatable {
   List<Object> get props => [];
 }
 
-class SeasonInitEvent extends SeasonEvent {}
-
 class SeasonLoadEvent extends SeasonEvent {}
-
-class SeasonChangedEvent extends SeasonEvent {}

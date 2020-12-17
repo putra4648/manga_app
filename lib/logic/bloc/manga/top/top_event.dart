@@ -7,6 +7,4 @@ abstract class TopEvent extends Equatable {
   List<Object> get props => [];
 }
 
-class TopInitEvent extends TopEvent {}
-
 class TopLoadEvent extends TopEvent {}

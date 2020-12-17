@@ -2,7 +2,7 @@ import 'dart:async';
 
 import 'package:convex_bottom_bar/convex_bottom_bar.dart';
 import 'package:flutter/material.dart';
-import 'package:manga_app/logic/cubit/manga/top/top_bloc.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 import '../../logic/logic.dart';
 import '../widgets/custom_style_hook.dart';
@@ -11,8 +11,10 @@ import '../pages/show_character_page.dart';
 import '../pages/show_manga_page.dart';
 
 class HomeScreen extends StatefulWidget {
+  final TabController tabController;
   const HomeScreen({
     Key key,
+    @required this.tabController,
   }) : super(key: key);
 
   @override
@@ -54,24 +56,18 @@ class _HomeScreenState extends State<HomeScreen> {
         bottomNavigationBar: StyleProvider(
           style: CustomStyleHook(),
           child: ConvexAppBar(
+            controller: widget.tabController,
             backgroundColor: Theme.of(context).appBarTheme.color,
             elevation: 0,
             style: TabStyle.flip,
             items: [
               TabItem(icon: Icons.home, title: 'Home'),
-              TabItem(icon: Icons.navigation, title: 'Navigation'),
-              TabItem(icon: Icons.favorite_border, title: 'Favorite'),
-              TabItem(icon: Icons.theaters, title: 'Upcoming'),
-              TabItem(icon: Icons.more_horiz, title: 'Menu'),
+              TabItem(icon: FontAwesomeIcons.calendarAlt, title: 'Schedule'),
             ],
           ),
         ),
         appBar: AppBar(
-          leading: IconButton(
-            icon: Icon(Icons.notifications),
-            onPressed: () {},
-          ),
-          title: const Text('Manga'),
+          title: const Text('WeaBook'),
           centerTitle: true,
           actions: [
             IconButton(
@@ -104,28 +100,19 @@ class _HomeScreenState extends State<HomeScreen> {
             }
             if (state is ConnectionResult) {
               if (state.connectivityResult.index != 2) {
-                return RefreshIndicator(
-                  // onRefresh: () {},
-                  onRefresh: () {
-                    // context.read<SeasonBloc>().add(SeasonInitEvent());
-                    // context.read<TopBloc>().add(TopInitEvent());
-                    context.read<CharacterBloc>().add(CharacterLoadEvent());
-                    return refreshCompleter.future;
-                  },
-                  child: SingleChildScrollView(
-                    child: Column(
-                      children: [
-                        buildContainerLabel('Top Character',
-                            'Most popular character in 2020', theme, null),
-                        buildContainerCharacterManga(size),
-                        buildContainerLabel('Top Manga',
-                            'You can see our top manga here', theme, true),
-                        buildContainerTopManga(size),
-                        buildContainerLabel('Season',
-                            'List upcoming manga and anime', theme, false),
-                        buildContainerSeasonManga(size)
-                      ],
-                    ),
+                return SingleChildScrollView(
+                  child: Column(
+                    children: [
+                      buildContainerLabel('Top Character',
+                          'Most popular character in 2020', theme, null),
+                      buildContainerCharacterManga(size),
+                      buildContainerLabel('Top Manga',
+                          'You can see our top manga here', theme, true),
+                      buildContainerTopManga(size),
+                      buildContainerLabel('Season',
+                          'List upcoming manga and anime', theme, false),
+                      buildContainerSeasonManga(size)
+                    ],
                   ),
                 );
               } else {
@@ -159,7 +146,6 @@ class _HomeScreenState extends State<HomeScreen> {
             return ShowCharacterPage(
               listCharacter: state.characters,
               size: size,
-              isEmpty: state.isEmpty,
             );
           }
           if (state is CharacterFailure) {

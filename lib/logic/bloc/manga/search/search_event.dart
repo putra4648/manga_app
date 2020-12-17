@@ -14,3 +14,20 @@ class SearchEventRequested extends SearchEvent {
 
   const SearchEventRequested({this.search});
 }
+
+class SearchTypeChanged extends SearchEvent {
+  final Type type;
+
+  SearchTypeChanged({this.type});
+
+  SearchTypeChanged copyWith({
+    Type type,
+  }) {
+    return SearchTypeChanged(
+      type: type ?? this.type,
+    );
+  }
+
+  @override
+  List<Object> get props => [type];
+}
